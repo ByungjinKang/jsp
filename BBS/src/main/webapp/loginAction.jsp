@@ -29,7 +29,7 @@
         // 쿼리 실행 및 결과 처리
         ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
-            // 로그인 성공 시 세션에 이메일 정보 저장 후 메인 페이지로 이동
+            // 로그인 성공 시 세션에 유저 넘버 정보 저장 후 메인 페이지로 이동
             session.setAttribute("userID", rs.getString("User_ID"));
             response.sendRedirect("main.jsp");
         } else {
