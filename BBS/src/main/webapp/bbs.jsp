@@ -8,19 +8,49 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <title>JSP 게시판 웹 사이트</title>
     <style>
-        .container {
-            margin-top: 20px;
+        body {
+            padding-top: 60px;
+        }
+        .panel {
+            border-radius: 0px;
+            border-color: #ddd;
+        }
+        .panel-title {
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .panel-body p {
+            font-size: 16px;
+            color: #555;
+        }
+        .navbar {
+            border-radius: 0px;
+        }
+        .navbar-brand {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .dropdown-menu {
+            border-radius: 0px;
+            border-color: #ddd;
+        }
+        .form-control {
+            border-radius: 0px;
+        }
+        .btn {
+            border-radius: 0px;
         }
     </style>
 </head>
 <body>
-    <%
-        // 세션에서 User_ID 가져오기
+    <!-- 세션에서 User_ID 가져오기 -->
+    <% 
         String userID = null;
         String userNickName = null;
         String userAdmin = null;
@@ -69,34 +99,40 @@
         boolean loggedIn = (userID != null && !userID.isEmpty());
     %>
 
-    <nav class="navbar navbar-default">
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="main.jsp">JSP 게시판 웹 사이트</a>
-            </div>
+            <a class="navbar-brand" href="main.jsp">Novel AI</a>
             <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="navbar-nav ml-auto">
                     <% if (loggedIn) { %>
-                        <li><a href="write.jsp?boardID=<%= request.getParameter("boardID") %>">게시글 등록</a></li> <!-- 수정: write.jsp로 이동할 때 boardID 전달 -->
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <%= userNickName %><span class="caret"></span>
+                        <li class="nav-item">
+                            <a class="nav-link" href="write.jsp?boardID=<%= request.getParameter("boardID") %>">게시글 등록</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <%= userNickName %>
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="logoutAction.jsp">로그아웃</a></li>
-                                <li><a href="updateUser.jsp">회원 정보 수정</a></li>
-
-                            </ul>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="logoutAction.jsp">로그아웃</a>
+                                <a class="dropdown-item" href="updateUser.jsp">회원 정보 수정</a>
+                            </div>
                         </li>
                     <% } else { %>
-                        <li><a href="login.jsp">로그인</a></li>
-                        <li><a href="join.jsp">회원가입</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.jsp">로그인</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="join.jsp">회원가입</a>
+                        </li>
                     <% } %>
                 </ul>
             </div>
         </div>
     </nav>
+    
 
+    <!-- 게시판 목록 -->
     <div class="container">
         <h3>게시판</h3>
         <% 
@@ -132,6 +168,7 @@
         %>
         <h4>게시판: <%= boardNameValue %></h4>
         
+        <!-- 검색 폼 -->
         <form action="bbs.jsp" method="GET">
             <div class="form-group">
                 <label for="searchKeyword">검색어</label>
@@ -168,6 +205,7 @@
             <button type="button" class="btn btn-default" onclick="showAllPosts()">전체 글 보기</button>
         </form>
 
+        <!-- 게시글 목록 -->
         <% 
             // 검색어 파라미터 확인
             String searchKeyword = request.getParameter("searchKeyword");
@@ -222,7 +260,7 @@
                     userNickNames = userRs.getString("NickName");
                 }
         %>
-            <div class="panel panel-default">
+            <div class="panel panel-default post-panel">
                 <div class="panel-body">
                     <h4><a href="view.jsp?postID=<%= postID %>"><%= count %>. <%= title %></a></h4>
                     <p>작성일: <%= date %></p>
@@ -234,8 +272,10 @@
                     <% } %>
                     <% if (loggedIn && (userAdmin != null && userAdmin.equals("1"))) { %>
                         <!-- 수정, 삭제 버튼 -->
-                        <a href="updatePost.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm">수정</a>
-                        <a href="deleteAction.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+                        <div class="btn-group">
+                            <a href="updatePost.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm">수정</a>
+                            <a href="deleteAction.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+                        </div>
                     <% } %>
                 </div>
             </div>
@@ -256,6 +296,12 @@
             }
         }
     %>
+
+    <!-- 페이징 -->
+    <div class="text-center">
+        <ul class="pagination">
+            <!-- 페이징 코드 추가 -->
+        </ul>
     </div>
 
     <script>

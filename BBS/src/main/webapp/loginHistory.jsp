@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-<% request.setCharacterEncoding("UTF-8"); %>
 <%@ page import="java.io.PrintWriter" %>
 
 <!DOCTYPE html>
@@ -9,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css">
-    <title>관리자 페이지</title>
+    <title>로그인 기록</title>
 </head>
 <body>
 <%
@@ -34,8 +33,8 @@
         conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
 
         // 사용자의 Admin 속성값 조회
-        String selectSql = "SELECT Admin FROM User WHERE User_ID = ?";
-        pstmt = conn.prepareStatement(selectSql);
+        String selectAdminSql = "SELECT Admin FROM User WHERE User_ID = ?";
+        pstmt = conn.prepareStatement(selectAdminSql);
         pstmt.setString(1, userID);
         rs = pstmt.executeQuery();
 
@@ -45,9 +44,9 @@
         }
 
         if (isAdmin) {
-            // 게시판 목록 조회
-            String selectSqlB = "SELECT * FROM Board";
-            pstmt = conn.prepareStatement(selectSqlB);
+            // 로그인 기록 조회
+            String selectLoginHistorySql = "SELECT * FROM LoginHistory";
+            pstmt = conn.prepareStatement(selectLoginHistorySql);
             rs = pstmt.executeQuery();
 
 %>
@@ -60,15 +59,13 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">관리자 페이지</a>
+                        <a class="navbar-brand" href="#">로그인 기록</a>
                     </div>
 
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="adminPage.jsp">게시판 관리</a></li>
+                            <li><a href="adminPage.jsp">게시판 관리</a></li>
                             <li><a href="main.jsp">메인으로 돌아가기</a></li>
-                            <li><a href="userManage.jsp">회원 정보 관리</a></li>
-                            <li><a href="loginHistory.jsp">로그인 기록</a></li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
@@ -80,45 +77,30 @@
             </nav>
 
             <div class="container">
-                <h3>게시판 목록</h3>
+                <h3>로그인 기록</h3>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>게시판 ID</th>
-                            <th>게시판 이름</th>
-                            <th>작업</th>
+                            <th>로그인 기록 ID</th>
+                            <th>사용자 ID</th>
+                            <th>로그인 시간</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% while (rs.next()) { %>
                             <tr>
-                                <td><%= rs.getInt("Board_ID") %></td>
-                                <td><%= rs.getString("Board_Name") %></td>
-                                <td>
-                                    <a href="bbs.jsp?boardID=<%= rs.getInt("Board_ID") %>" class="btn btn-primary btn-sm">게시판 보기</a>
-                                    <a href="updateBoard.jsp?boardID=<%= rs.getInt("Board_ID") %>" class="btn btn-primary btn-sm">게시판 수정</a>
-                                    <a href="deleteBoardAction.jsp?boardID=<%= rs.getInt("Board_ID") %>" class="btn btn-primary btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?')">게시판 삭제</a>
-                                </td>
+                                <td><%= rs.getInt("LOGH_code") %></td>
+                                <td><%= rs.getInt("User_ID") %></td>
+                                <td><%= rs.getTimestamp("LOGTIME") %></td>
                             </tr>
                         <% } %>
                     </tbody>
                 </table>
-
-                <h3>새로운 게시판 생성</h3>
-                <form action="addBoardAction.jsp" method="POST">
-                    <div class="form-group">
-                        <label for="boardName">게시판 이름</label>
-                        <input type="text" class="form-control" id="boardName" name="boardName" required>
-                    </div>
-                    <!-- 필요한 추가 정보 입력 -->
-
-                    <button type="submit" class="btn btn-primary">게시판 생성</button>
-                </form>
             </div>
 
             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
             <script src="js/bootstrap.js"></script>
-<%      
+<%
         } else {
             // 관리자 인증 실패 시 처리
             response.sendRedirect("login.jsp"); // 로그인 페이지로 리다이렉트
