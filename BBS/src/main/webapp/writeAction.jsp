@@ -11,13 +11,14 @@
     }
 
     // 게시글 등록 처리
-    if (userID != null && request.getParameter("bbsTitle") != null && request.getParameter("bbsContent") != null) {
+    if (userID != null && request.getParameter("bbsTitle") != null && request.getParameter("bbsContent") != null && request.getParameter("boardID") != null) {
         String title = request.getParameter("bbsTitle");
         String content = request.getParameter("bbsContent");
-        
+        int boardID = Integer.parseInt(request.getParameter("boardID"));
+
         Connection conn = null;
         PreparedStatement pstmt = null;
-        
+
         try {
             String driverName = "com.mysql.jdbc.Driver";
             String dbURL = "jdbc:mysql://localhost:3306/jsp41";
@@ -27,14 +28,15 @@
             Class.forName(driverName);
             conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
 
-            String sql = "INSERT INTO Post (User_ID, C_Date, Title, Content) VALUES (?, NOW(), ?, ?)";
+            String sql = "INSERT INTO Post (User_ID, C_Date, Title, Content, Board_ID) VALUES (?, NOW(), ?, ?, ?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, userID);
             pstmt.setString(2, title);
             pstmt.setString(3, content);
+            pstmt.setInt(4, boardID);
             pstmt.executeUpdate();
 
-            response.sendRedirect("bbs.jsp"); // 게시판 페이지로 이동
+            response.sendRedirect("bbs.jsp?boardID=" + boardID); // 해당 게시판 페이지로 이동
         } catch (Exception e) {
             out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
             out.println(e.toString());

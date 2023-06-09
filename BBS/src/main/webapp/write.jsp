@@ -14,10 +14,11 @@
     <% 
         String userID = null;
         String userNickName = null;
-        if (session.getAttribute("userID") != null){
+        int boardID = -1;
+        if (session.getAttribute("userID") != null) {
             userID = (String) session.getAttribute("userID");
         }
-        
+
         // 로그인 상태가 아니면 로그인 페이지로 이동
         if (userID == null) {
             response.sendRedirect("login.jsp");
@@ -42,6 +43,12 @@
             userRs = userPstmt.executeQuery();
             if (userRs.next()) {
                 userNickName = userRs.getString("NickName");
+            }
+
+            // bbs.jsp에서 boardID 가져오기
+            String boardIDParam = request.getParameter("boardID");
+            if (boardIDParam != null && !boardIDParam.isEmpty()) {
+                boardID = Integer.parseInt(boardIDParam);
             }
         } catch (Exception e) {
             out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
@@ -96,6 +103,9 @@
     <div class="container">
         <div class="row">
             <form method="post" action="writeAction.jsp">
+                <% if (boardID != -1) { %>
+                    <input type="hidden" name="boardID" value="<%= boardID %>">
+                <% } %>
                 <table class="table table-stripped" style="text-align: center; border: 1px solid #dddddd">
                     <thead>
                         <tr>

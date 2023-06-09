@@ -59,11 +59,61 @@
         postID = Integer.parseInt(request.getParameter("postCode"));
     }
 
+    // 게시글 방문 기록 저장 및 조회수 업데이트
+    if (userID != null) {
+        Connection conn = null;
+        PreparedStatement historyPstmt = null;
+        try {
+            String driverName = "com.mysql.jdbc.Driver";
+            String dbURL = "jdbc:mysql://localhost:3306/jsp41";
+            String dbUser = "jsp41";
+            String dbPassword = "poiu0987";
+
+            Class.forName(driverName);
+            conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+
+            // 이미 방문한 기록이 있는지 확인
+            String historyCheckSql = "SELECT * FROM PostHistory WHERE POST_code = ? AND User_ID = ?";
+            PreparedStatement historyCheckPstmt = conn.prepareStatement(historyCheckSql);
+            historyCheckPstmt.setInt(1, postID);
+            historyCheckPstmt.setString(2, userID);
+            ResultSet historyCheckRs = historyCheckPstmt.executeQuery();
+
+            if (!historyCheckRs.next()) { // 방문 기록이 없는 경우에만 기록 저장
+                String historyInsertSql = "INSERT INTO PostHistory (POST_code, User_ID) VALUES (?, ?)";
+                historyPstmt = conn.prepareStatement(historyInsertSql);
+                historyPstmt.setInt(1, postID);
+                historyPstmt.setString(2, userID);
+                historyPstmt.executeUpdate();
+
+                // 조회수 업데이트
+                String updateViewCountSql = "UPDATE Post SET ViewCount = (SELECT COUNT(*) FROM PostHistory WHERE POST_code = ?) WHERE POST_code = ?";
+                PreparedStatement updateViewCountPstmt = conn.prepareStatement(updateViewCountSql);
+                updateViewCountPstmt.setInt(1, postID);
+                updateViewCountPstmt.setInt(2, postID);
+                updateViewCountPstmt.executeUpdate();
+            }
+        } catch (Exception e) {
+            out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
+            out.println(e.toString());
+            e.printStackTrace();
+        } finally {
+            if (historyPstmt != null) {
+                historyPstmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+    }
+
     Connection conn = null;
     PreparedStatement postPstmt = null;
     ResultSet postRs = null;
     PreparedStatement commentPstmt = null;
     ResultSet commentRs = null;
+    PreparedStatement boardPstmt = null;
+    ResultSet boardRs = null;
     try {
         String driverName = "com.mysql.jdbc.Driver";
         String dbURL = "jdbc:mysql://localhost:3306/jsp41";
@@ -78,12 +128,17 @@
         postPstmt.setInt(1, postID);
         postRs = postPstmt.executeQuery();
 
+        String boardSql = "SELECT * FROM Board";
+        boardPstmt = conn.prepareStatement(boardSql);
+        boardRs = boardPstmt.executeQuery();
+
         if (postRs.next()) {
             String title = postRs.getString("Title");
             String content = postRs.getString("Content");
             String writer = postRs.getString("User_ID");
             String date = postRs.getString("C_Date");
             String modifiedDate = postRs.getString("M_Date");
+            int viewCount = postRs.getInt("ViewCount");
 
             // 작성자의 닉네임 가져오기
             String writerNickName = null;
@@ -142,6 +197,7 @@
                         <% if (modifiedDate != null) { %>
                             <p>수정일: <%= modifiedDate %></p>
                         <% } %>
+                        <p>조회수: <%= viewCount %></p>
                         <p><%= content %></p>
                     </div>
                 </div>
@@ -200,10 +256,12 @@
                     </div>
                 <% } %>
 
-                <a href="bbs.jsp" class="btn btn-primary">목록</a>
+                <% if (boardRs.next()) { %>
+                <a href="bbs.jsp?boardID=<%= boardRs.getString("Board_ID") %>" class="btn btn-primary">목록</a>
+                <% } %>
                 <% if (userID != null && userID.equals(writer)) { %>
-                <a href="update.jsp?postID=<%= postID %>" class="btn btn-primary">수정</a>
-                <a href="deleteAction.jsp?postID=<%= postID %>" class="btn btn-primary">삭제</a>
+                <a href="update.jsp?postID=<%= postID %>&boardID=<%= boardRs.getString("Board_ID") %>" class="btn btn-primary">수정</a>
+                <a href="deleteAction.jsp?postID=<%= postID %>&boardID=<%= boardRs.getString("Board_ID") %>" class="btn btn-primary">삭제</a>
                 <% } %>
             </div>
 
@@ -214,7 +272,9 @@
         else {
             out.println("<div class=\"container\">");
             out.println("<p>유효하지 않은 글입니다.</p>");
-            out.println("<a href=\"bbs.jsp\" class=\"btn btn-primary\">목록</a>");
+            if (boardRs.next()) {
+                out.println("<a href=\"bbs.jsp?boardID=" + boardRs.getString("Board_ID") + "\" class=\"btn btn-primary\">목록</a>");
+            }
             out.println("</div>");
         }
     } catch (Exception e) {

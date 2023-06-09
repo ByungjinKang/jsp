@@ -15,9 +15,10 @@
         // 세션에서 User_ID 가져오기
         String userID = null;
         String userNickName = null;
+        String userAdmin = null;
         if (session.getAttribute("userID") != null) {
             userID = (String) session.getAttribute("userID");
-            // User 테이블에서 NickName 가져오기
+            // User 테이블에서 NickName과 Admin 가져오기
             Connection conn = null;
             PreparedStatement userPstmt = null;
             ResultSet userRs = null;
@@ -30,12 +31,13 @@
                 Class.forName(driverName);
                 conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
 
-                String userSql = "SELECT NickName FROM User WHERE User_ID = ?";
+                String userSql = "SELECT NickName, Admin FROM User WHERE User_ID = ?";
                 userPstmt = conn.prepareStatement(userSql);
                 userPstmt.setString(1, userID);
                 userRs = userPstmt.executeQuery();
                 if (userRs.next()) {
                     userNickName = userRs.getString("NickName");
+                    userAdmin = userRs.getString("Admin");
                 }
             } catch (Exception e) {
                 out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
@@ -57,6 +59,30 @@
 
         // 로그인 여부 확인
         boolean loggedIn = (userID != null && !userID.isEmpty());
+        // 관리자 여부 확인
+        boolean isAdmin = (userAdmin != null && userAdmin.equals("1"));
+
+        // Board 테이블에서 게시판 정보 가져오기
+        Connection conn = null;
+        PreparedStatement boardPstmt = null;
+        ResultSet boardRs = null;
+        try {
+            String driverName = "com.mysql.jdbc.Driver";
+            String dbURL = "jdbc:mysql://localhost:3306/jsp41";
+            String dbUser = "jsp41";
+            String dbPassword = "poiu0987";
+
+            Class.forName(driverName);
+            conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+
+            String boardSql = "SELECT * FROM Board";
+            boardPstmt = conn.prepareStatement(boardSql);
+            boardRs = boardPstmt.executeQuery();
+        } catch (Exception e) {
+            out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
+            out.println(e.toString());
+            e.printStackTrace();
+        }
     %>
 
     <nav class="navbar navbar-default">
@@ -96,11 +122,29 @@
                                 <li><a href="logoutAction.jsp">로그아웃</a></li>
                             </ul>
                         </li>
+                        <% if (isAdmin) { %>
+                            <li><a href="adminPage.jsp">관리자 페이지</a></li>
+                        <% } %>
                     </ul>
                 <% } %>
             </div>
         </div>
     </nav>
+
+    <div class="container">
+        <h2>게시판 종류</h2>
+        <% if (boardRs != null) { %>
+            <ul>
+                <% while (boardRs.next()) { %>
+                    <li>
+                        <a href="bbs.jsp?boardID=<%= boardRs.getString("Board_ID") %>"><%= boardRs.getString("Board_Name") %></a>
+                    </li>
+                <% } %>
+            </ul>
+        <% } else { %>
+            <p>게시판이 존재하지 않습니다.</p>
+        <% } %>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
