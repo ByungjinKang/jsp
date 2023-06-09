@@ -23,6 +23,7 @@
         // 세션에서 User_ID 가져오기
         String userID = null;
         String userNickName = null;
+        String userAdmin = null;
         if (session.getAttribute("userID") != null) {
             userID = (String) session.getAttribute("userID");
             // User 테이블에서 NickName 가져오기
@@ -38,12 +39,13 @@
                 Class.forName(driverName);
                 conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
 
-                String userSql = "SELECT NickName FROM User WHERE User_ID = ?";
+                String userSql = "SELECT NickName, Admin FROM User WHERE User_ID = ?";
                 userPstmt = conn.prepareStatement(userSql);
                 userPstmt.setString(1, userID);
                 userRs = userPstmt.executeQuery();
                 if (userRs.next()) {
                     userNickName = userRs.getString("NickName");
+                    userAdmin = userRs.getString("Admin");
                 }
             } catch (Exception e) {
                 out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
@@ -82,6 +84,8 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="logoutAction.jsp">로그아웃</a></li>
+                                <li><a href="updateUser.jsp">회원 정보 수정</a></li>
+
                             </ul>
                         </li>
                     <% } else { %>
@@ -227,6 +231,11 @@
                         <p>수정일: <%= modifiedDate %></p>
                     <% } else { %>
                         <p>수정일: </p>
+                    <% } %>
+                    <% if (loggedIn && (userAdmin != null && userAdmin.equals("1"))) { %>
+                        <!-- 수정, 삭제 버튼 -->
+                        <a href="updatePost.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm">수정</a>
+                        <a href="deleteAction.jsp?postID=<%= postID %>&boardID=<%= boardIDParam %>" class="btn btn-primary btn-sm" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
                     <% } %>
                 </div>
             </div>

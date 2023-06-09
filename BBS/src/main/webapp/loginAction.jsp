@@ -31,6 +31,13 @@
         if (rs.next()) {
             // 로그인 성공 시 세션에 유저 넘버 정보 저장 후 메인 페이지로 이동
             session.setAttribute("userID", rs.getString("User_ID"));
+
+            // 로그인 기록 저장
+            String insertLoginHistory = "INSERT INTO LoginHistory (User_ID, LOGTIME) VALUES (?, NOW())";
+            PreparedStatement insertPstmt = con.prepareStatement(insertLoginHistory);
+            insertPstmt.setString(1, rs.getString("User_ID"));
+            insertPstmt.executeUpdate();
+
             response.sendRedirect("main.jsp");
         } else {
             // 로그인 실패 시 알림창을 띄우고 이전 페이지로 이동
@@ -53,6 +60,3 @@
         }
     }
 %>
-
-
-<p><hr>

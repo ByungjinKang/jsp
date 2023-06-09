@@ -100,7 +100,11 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="main.jsp">메인</a></li>
-                    <li><a href="bbs.jsp">게시판</a></li>
+                    <% if (boardRs != null) { %>
+                        <% while (boardRs.next()) { %>
+                            <li><a href="bbs.jsp?boardID=<%= boardRs.getString("Board_ID") %>"><%= boardRs.getString("Board_Name") %></a></li>
+                        <% } %>
+                    <% } %>
                 </ul>
                 <% if (userID == null) { %>
                     <ul class="nav navbar-nav navbar-right">
@@ -120,6 +124,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="logoutAction.jsp">로그아웃</a></li>
+                                <li><a href="updateUser.jsp">회원 정보 수정</a></li>
                             </ul>
                         </li>
                         <% if (isAdmin) { %>
@@ -131,7 +136,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <!-- <div class="container">
         <h2>게시판 종류</h2>
         <% if (boardRs != null) { %>
             <ul>
@@ -144,7 +149,7 @@
         <% } else { %>
             <p>게시판이 존재하지 않습니다.</p>
         <% } %>
-    </div>
+    </div> -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
