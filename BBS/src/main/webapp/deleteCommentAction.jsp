@@ -11,8 +11,8 @@
 
     Connection conn = null;
     PreparedStatement deletePstmt = null;
-    PreparedStatement postCodePstmt = null;
-    ResultSet postCodeRs = null;
+    PreparedStatement postIDPstmt = null;
+    ResultSet postIDRs = null;
     try {
         String driverName = "com.mysql.jdbc.Driver";
         String dbURL = "jdbc:mysql://localhost:3306/jsp41";
@@ -23,13 +23,13 @@
         conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
 
         // 게시글 페이지로 리다이렉트하기 위해 댓글이 속한 게시물의 코드를 가져옴
-        String postCodeSql = "SELECT POST_code FROM Comment WHERE COM_code = ?";
-        postCodePstmt = conn.prepareStatement(postCodeSql);
-        postCodePstmt.setInt(1, commentID);
-        postCodeRs = postCodePstmt.executeQuery();
-        int postCode = 0;
-        if (postCodeRs.next()) {
-            postCode = postCodeRs.getInt("POST_code");
+        String postIDSql = "SELECT POST_code FROM Comment WHERE COM_code = ?";
+        postIDPstmt = conn.prepareStatement(postIDSql);
+        postIDPstmt.setInt(1, commentID);
+        postIDRs = postIDPstmt.executeQuery();
+        int postID = 0;
+        if (postIDRs.next()) {
+            postID = postIDRs.getInt("POST_code");
         }
 
         String deleteSql = "DELETE FROM Comment WHERE COM_code = ?";
@@ -38,7 +38,7 @@
         int rowsAffected = deletePstmt.executeUpdate();
 
         if (rowsAffected > 0) {
-            response.sendRedirect("view.jsp?postCode=" + postCode);
+            response.sendRedirect("view.jsp?postID=" + postID);
         } else {
             out.println("<p>댓글 삭제에 실패했습니다.</p>");
             out.println("<a href=\"bbs.jsp\" class=\"btn btn-primary\">목록</a>");
@@ -48,11 +48,11 @@
         out.println(e.toString());
         e.printStackTrace();
     } finally {
-        if (postCodeRs != null) {
-            postCodeRs.close();
+        if (postIDRs != null) {
+            postIDRs.close();
         }
-        if (postCodePstmt != null) {
-            postCodePstmt.close();
+        if (postIDPstmt != null) {
+            postIDPstmt.close();
         }
         if (deletePstmt != null) {
             deletePstmt.close();

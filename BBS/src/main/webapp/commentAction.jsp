@@ -5,7 +5,7 @@
     request.setCharacterEncoding("UTF-8");
     
     // 댓글 작성 폼에서 전달된 데이터 가져오기
-    int postID = Integer.parseInt(request.getParameter("postCode"));
+    int postID = Integer.parseInt(request.getParameter("postID"));
     String commentContent = request.getParameter("commentContent");
     
     // 현재 로그인한 사용자의 정보 가져오기
@@ -46,5 +46,5 @@
     }
     
     // 댓글 추가 후 상세 페이지로 이동
-    response.sendRedirect("view.jsp?postCode=" + postID);
+    response.sendRedirect("view.jsp?postID=" + postID);
 %>

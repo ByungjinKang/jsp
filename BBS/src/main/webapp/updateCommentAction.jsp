@@ -60,13 +60,13 @@
         commentPstmt.executeUpdate();
 
         // 댓글 수정이 완료되었으므로, 해당 댓글이 속한 게시물 페이지로 리다이렉트
-        String postCodeSql = "SELECT POST_code FROM Comment WHERE COM_code = ?";
-        PreparedStatement postCodePstmt = conn.prepareStatement(postCodeSql);
-        postCodePstmt.setInt(1, commentID);
-        ResultSet postCodeRs = postCodePstmt.executeQuery();
-        if (postCodeRs.next()) {
-            int postCode = postCodeRs.getInt("POST_code");
-            response.sendRedirect("view.jsp?postCode=" + postCode);
+        String postIDSql = "SELECT POST_code FROM Comment WHERE COM_code = ?";
+        PreparedStatement postIDPstmt = conn.prepareStatement(postIDSql);
+        postIDPstmt.setInt(1, commentID);
+        ResultSet postIDRs = postIDPstmt.executeQuery();
+        if (postIDRs.next()) {
+            int postID = postIDRs.getInt("POST_code");
+            response.sendRedirect("view.jsp?postID=" + postID);
         } else {
             // 댓글이 속한 게시물의 코드를 찾을 수 없는 경우, 에러 메시지 출력 후 목록 페이지로 이동
             out.println("<div class=\"container\">");

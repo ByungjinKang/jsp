@@ -55,8 +55,8 @@
     }
 
     int postID = 0;
-    if (request.getParameter("postCode") != null) {
-        postID = Integer.parseInt(request.getParameter("postCode"));
+    if (request.getParameter("postID") != null) {
+        postID = Integer.parseInt(request.getParameter("postID"));
     }
 
     // 게시글 방문 기록 저장 및 조회수 업데이트
@@ -245,7 +245,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <form action="commentAction.jsp" method="POST">
-                                <input type="hidden" name="postCode" value="<%= postID %>">
+                                <input type="hidden" name="postID" value="<%= postID %>">
                                 <div class="form-group">
                                     <label for="commentContent">댓글 작성</label>
                                     <textarea class="form-control" id="commentContent" name="commentContent" rows="3"></textarea>

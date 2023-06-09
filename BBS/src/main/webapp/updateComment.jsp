@@ -141,7 +141,7 @@
                                 <textarea class="form-control" id="commentContent" name="commentContent" rows="3"><%= commentContent %></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">수정</button>
-                            <a href="view.jsp?postCode=<%= commentRs.getInt("POST_code") %>" class="btn btn-primary">취소</a>
+                            <a href="view.jsp?postID=<%= commentRs.getInt("POST_code") %>" class="btn btn-primary">취소</a>
                         </form>
                     </div>
                 </div>

@@ -203,7 +203,7 @@
             // 게시글 목록 출력
             int count = 1;
             while (rs.next()) {
-                int postCode = rs.getInt("POST_code");
+                int postID = rs.getInt("POST_code");
                 String title = rs.getString("Title");
                 String date = rs.getString("C_Date");
                 String userNickNames = "";
@@ -220,7 +220,7 @@
         %>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h4><a href="view.jsp?postCode=<%= postCode %>"><%= count %>. <%= title %></a></h4>
+                    <h4><a href="view.jsp?postID=<%= postID %>"><%= count %>. <%= title %></a></h4>
                     <p>작성일: <%= date %></p>
                     <p>작성자: <%= userNickNames %></p>
                     <% if (modifiedDate != null) { %>
