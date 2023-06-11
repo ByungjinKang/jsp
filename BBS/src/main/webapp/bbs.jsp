@@ -103,6 +103,9 @@
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="main.jsp">Novel AI</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
                     <% if (loggedIn) { %>
@@ -134,7 +137,6 @@
 
     <!-- 게시판 목록 -->
     <div class="container">
-        <h3>게시판</h3>
         <% 
             // JDBC 연결 및 SQL 문 실행 준비
             Connection conn = null;
@@ -166,7 +168,7 @@
                     rs.close();
                 }
         %>
-        <h4>게시판: <%= boardNameValue %></h4>
+        <h3><%= boardNameValue %></h3>
         
         <!-- 검색 폼 -->
         <form action="bbs.jsp" method="GET">
@@ -177,7 +179,6 @@
             <div class="form-group">
                 <label for="boardID">게시판</label>
                 <select class="form-control" id="boardID" name="boardID">
-                    <option value="">전체 게시판</option>
                     <% 
                         // Board 테이블에서 게시판 정보 가져오기
                         String boardSql = "SELECT * FROM Board";

@@ -66,9 +66,9 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li class="active"><a href="adminPage.jsp">게시판 관리</a></li>
-                            <li><a href="main.jsp">메인으로 돌아가기</a></li>
                             <li><a href="userManage.jsp">회원 정보 관리</a></li>
                             <li><a href="loginHistory.jsp">로그인 기록</a></li>
+                            <li><a href="main.jsp">메인으로 돌아가기</a></li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">

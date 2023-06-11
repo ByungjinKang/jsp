@@ -59,12 +59,14 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">로그인 기록</a>
+                        <a class="navbar-brand" href="#">관리자 페이지</a>
                     </div>
 
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li><a href="adminPage.jsp">게시판 관리</a></li>
+                            <li><a href="userManage.jsp">회원 정보 관리</a></li>
+                            <li class="active"><a href="loginHistory.jsp">로그인 기록</a></li>
                             <li><a href="main.jsp">메인으로 돌아가기</a></li>
                         </ul>
 
