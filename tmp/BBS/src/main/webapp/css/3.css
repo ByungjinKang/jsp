@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'OAGothic-ExtraBold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/OAGothic-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TheJamsil5Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+.navbar{
+    padding: 10px;
+    background-color: #e2e2e2;
+}
+
+
+.table > thead > tr > td.active,
+.table > tbody > tr > td.active,
+.table > tfoot > tr > td.active,
+.table > thead > tr > th.active,
+.table > tbody > tr > th.active,
+.table > tfoot > tr > th.active,
+.table > thead > tr.active > td,
+.table > tbody > tr.active > td,
+.table > tfoot > tr.active > td,
+.table > thead > tr.active > th,
+.table > tbody > tr.active > th,
+.table > tfoot > tr.active > th {
+    background-color: #e2e2e2;
+}
+
+
+body{
+    background-color: #343a40;;
+}
+
+.navbar-brand{
+    padding-top: 20px;
+    font-family: 'TheJamsil5Bold';
+}
+
+.navbar-nav>li>a{
+    padding-top:10px;
+    padding-bottom:10px;
+    line-height:40px}
+
+.navbar-nav{
+    padding-right: 10px;
+}
+
+.container{
+    padding-top: 5%;
+    color: #e2e2e2;
+}
+
+h3{
+    font-family: 'TheJamsil5Bold';
+}
+
+.table{
+    background-color: #e2e2e2;
+    
+    color: #343a40;
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > th,
+.table-bordered > tfoot > tr > th,
+.table-bordered > thead > tr > td,
+.table-bordered > tbody > tr > td,
+.table-bordered > tfoot > tr > td {
+    border: 1px solid #444444;
+}

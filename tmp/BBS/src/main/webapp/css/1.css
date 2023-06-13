@@ -1,0 +1,45 @@
+@font-face {
+    font-family: 'OAGothic-ExtraBold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/OAGothic-ExtraBold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TheJamsil5Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
+#h1{
+    margin: 0;
+}
+
+#aa{
+    margin: 0;
+}
+
+.navbar-brand{
+    padding-left: 10px;
+    font-family: 'TheJamsil5Bold';
+}
+.navbar-nav>li>a{
+    padding-top:10px;
+    padding-bottom:10px;
+    line-height:40px}
+
+.jumbotron>.lead{
+    color:#f8f9fac5;
+}
+
+.navbar-nav{
+    padding-right: 10px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+  }
+
