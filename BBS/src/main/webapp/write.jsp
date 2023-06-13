@@ -93,7 +93,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="logoutAction.jsp">로그아웃</a></li>
                                 <li><a href="updateUser.jsp">회원 정보 수정</a></li>
-
+                                <li><a href="myPosts.jsp?User_ID=<%= userID %>">My Post</a></li>
                             </ul>
                         </li>
                     <% } %>

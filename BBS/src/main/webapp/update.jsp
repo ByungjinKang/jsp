@@ -97,12 +97,11 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="main.jsp">JSP 게시판 웹 사이트</a>
+                        <a class="navbar-brand" href="main.jsp">Novel AI</a>
                     </div>
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li><a href="main.jsp">메인</a></li>
-                            <li class="active"><a href="bbs.jsp">게시판</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
@@ -110,6 +109,7 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="logoutAction.jsp">로그아웃</a></li>
                                     <li><a href="updateUser.jsp">회원 정보 수정</a></li>
+                                    <li><a href="myPosts.jsp?User_ID=<%= userID %>">My Post</a></li>
 
                                 </ul>
                             </li>

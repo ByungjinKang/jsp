@@ -114,6 +114,8 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="#">관리자</a></li>
                                 <li><a href="logout.jsp">로그아웃</a></li>
+                                <li><a href="myPosts.jsp?User_ID=<%= userID %>">My Post</a></li>
+
                             </ul>
                         </div>
                     </div>

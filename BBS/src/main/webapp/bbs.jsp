@@ -119,6 +119,8 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="logoutAction.jsp">로그아웃</a>
                                 <a class="dropdown-item" href="updateUser.jsp">회원 정보 수정</a>
+                                <a class="dropdown-item" href="myPosts.jsp?User_ID=<%= userID %>">My Post</a>
+
                             </div>
                         </li>
                     <% } else { %>

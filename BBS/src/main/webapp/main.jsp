@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.sql.*" %>
-<%@ page import="java.io.PrintWriter" %>
-<% request.setCharacterEncoding("UTF-8"); %>
+<%@ page import="java.sql.*, java.util.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,6 +23,37 @@
         }
         .navbar {
             margin-bottom: 2rem;
+        }
+        .sidebar {
+            position: fixed;
+            top: 20%;
+            right: 1rem;
+            width: 200px;
+            height: calc(80vh - 90px); /* Adjust the height as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+    
+        .following-list,
+        .follower-list,
+        .post-list {
+            margin-bottom: 1rem;
+        }
+    
+        .following-item,
+        .follower-item,
+        .post-item {
+            display: block;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+    
+        .following-item:hover,
+        .follower-item:hover,
+        .post-item:hover {
+            background-color: #f8f9fa;
         }
     </style>
 </head>
@@ -138,6 +167,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="logoutAction.jsp">로그아웃</a>
                     <a class="dropdown-item" href="updateUser.jsp">회원 정보 수정</a>
+                    <a class="dropdown-item" href="myPosts.jsp?User_ID=<%= userID %>">My Post</a>
                 </div>
             </li>
             <% if (isAdmin) { %>
@@ -151,13 +181,160 @@
 </nav>
 
 <div class="jumbotron text-center">
-    <h1 class="display-4" >Novel AI</h1>
+    <h1 class="display-4">Novel AI</h1>
     <p class="lead">AI 소설 커뮤니티 NovelAI입니다.</p>
     <% if (loggedIn) { %>
     <p>로그인되었습니다. 환영합니다, <%= userNickName %> 님!</p>
     <% } else { %>
     <p>로그인 후 게시판을 이용할 수 있습니다.</p>
     <% } %>
+    
+    <div class="sidebar">
+        <%-- 팔로워 목록 --%>
+        <% if (loggedIn) { %>
+        <h2>팔로워 목록</h2>
+        <div class="follower-list">
+            <% 
+                Connection conn2 = null;
+                PreparedStatement followerPstmt = null;
+                ResultSet followerRs = null;
+                try {
+                    String driverName = "com.mysql.jdbc.Driver";
+                    String dbURL = "jdbc:mysql://localhost:3306/jsp41";
+                    String dbUser = "jsp41";
+                    String dbPassword = "poiu0987";
+    
+                    Class.forName(driverName);
+                    conn2 = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+    
+                    String followerSql = "SELECT User.User_ID, User.NickName FROM Follow JOIN User ON Follow.Follower = User.User_ID WHERE Follow.Writer = ?";
+                    followerPstmt = conn2.prepareStatement(followerSql);
+                    followerPstmt.setString(1, userID);
+                    followerRs = followerPstmt.executeQuery();
+                    while (followerRs.next()) {
+                        String followerID = followerRs.getString("User_ID");
+                        String followerNickName = followerRs.getString("NickName");
+            %>
+                        <a href="myPosts.jsp?User_ID=<%= followerID %>" class="follower-item"><%= followerNickName %></a>
+            <%
+                    }
+                } catch (Exception e) {
+                    out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
+                    out.println(e.toString());
+                    e.printStackTrace();
+                } finally {
+                    // 자원 해제
+                    if (followerPstmt != null) {
+                        followerPstmt.close();
+                    }
+                    if (followerRs != null) {
+                        followerRs.close();
+                    }
+                    if (conn2 != null) {
+                        conn2.close();
+                    }
+                }
+            %>
+        </div>
+        <% } %>
+    
+        <%-- 팔로잉 목록 --%>
+        <% if (loggedIn) { %>
+        <h2 class="mb-3">팔로잉 목록</h2>
+        <div class="following-list">
+            <% 
+                Connection conn3 = null;
+                PreparedStatement followingPstmt = null;
+                ResultSet followingRs = null;
+                try {
+                    String driverName = "com.mysql.jdbc.Driver";
+                    String dbURL = "jdbc:mysql://localhost:3306/jsp41";
+                    String dbUser = "jsp41";
+                    String dbPassword = "poiu0987";
+    
+                    Class.forName(driverName);
+                    conn3 = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+    
+                    String followingSql = "SELECT User.User_ID, User.NickName FROM Follow JOIN User ON Follow.Writer = User.User_ID WHERE Follow.Follower = ?";
+                    followingPstmt = conn3.prepareStatement(followingSql);
+                    followingPstmt.setString(1, userID);
+                    followingRs = followingPstmt.executeQuery();
+                    while (followingRs.next()) {
+                        String followingID = followingRs.getString("User_ID");
+                        String followingNickName = followingRs.getString("NickName");
+            %>
+                        <a href="myPosts.jsp?User_ID=<%= followingID %>" class="following-item"><%= followingNickName %></a>
+            <%
+                    }
+                } catch (Exception e) {
+                    out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
+                    out.println(e.toString());
+                    e.printStackTrace();
+                } finally {
+                    // 자원 해제
+                    if (followingPstmt != null) {
+                        followingPstmt.close();
+                    }
+                    if (followingRs != null) {
+                        followingRs.close();
+                    }
+                    if (conn3 != null) {
+                        conn3.close();
+                    }
+                }
+            %>
+        </div>
+        <% } %>
+    
+        <%-- 로그인 한 사용자 게시글 목록 --%>
+        <% if (loggedIn) { %>
+        <h2>내 게시글</h2>
+        <div class="post-list">
+            <% 
+                Connection conn4 = null;
+                PreparedStatement postPstmt = null;
+                ResultSet postRs = null;
+                try {
+                    String driverName = "com.mysql.jdbc.Driver";
+                    String dbURL = "jdbc:mysql://localhost:3306/jsp41";
+                    String dbUser = "jsp41";
+                    String dbPassword = "poiu0987";
+    
+                    Class.forName(driverName);
+                    conn4 = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+    
+                    String postSql = "SELECT * FROM Post WHERE User_ID = ?";
+                    postPstmt = conn4.prepareStatement(postSql);
+                    postPstmt.setString(1, userID);
+                    postRs = postPstmt.executeQuery();
+                    while (postRs.next()) {
+                        int postID = postRs.getInt("POST_code");
+                        String postTitle = postRs.getString("Title");
+            %>
+                        <a href="view.jsp?postID=<%= postID %>" class="post-item"><%= postTitle %></a>
+            <%
+                    }
+                } catch (Exception e) {
+                    out.println("MySQL 데이터베이스 처리에 문제가 발생했습니다.<hr>");
+                    out.println(e.toString());
+                    e.printStackTrace();
+                } finally {
+                    // 자원 해제
+                    if (postPstmt != null) {
+                        postPstmt.close();
+                    }
+                    if (postRs != null) {
+                        postRs.close();
+                    }
+                    if (conn4 != null) {
+                        conn4.close();
+                    }
+                }
+            %>
+        </div>
+        <% } %>
+    
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
