@@ -234,6 +234,12 @@
                     %>
                 </select>
             </div>
+            <label for="sortCriteria">정렬 기준:</label>
+            <select name="sortCriteria" id="sortCriteria">
+              <option value="recent">최신순</option>
+              <option value="viewCount">조회순</option>
+              <option value="recommendCount">추천순</option>
+            </select>
             <button type="submit" class="btn btn-primary">검색</button>
             <button type="button" class="btn btn-default" onclick="resetSearch()">초기화</button>
             <button type="button" class="btn btn-default" onclick="showAllPosts()">전체 글 보기</button>
@@ -261,7 +267,18 @@
                     sqlBuilder.append("WHERE Board_ID = ? ");
                 }
             }
-            sqlBuilder.append("ORDER BY POST_code ASC");
+            String sortCriteria = request.getParameter("sortCriteria");
+            if (sortCriteria != null && !sortCriteria.isEmpty()) {
+                if (sortCriteria.equals("viewCount")) {
+                    sqlBuilder.append("ORDER BY ViewCount DESC ");
+                } else if (sortCriteria.equals("recommendCount")) {
+                    sqlBuilder.append("ORDER BY RecommendCount DESC ");
+                } else {
+                    sqlBuilder.append("ORDER BY POST_code DESC ");
+                }
+            } else {
+                sqlBuilder.append("ORDER BY POST_code DESC ");
+            }
             
             String sql = sqlBuilder.toString();
             pstmt = conn.prepareStatement(sql);
